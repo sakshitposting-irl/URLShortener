@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1, h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-top: 2px solid #eee;
+            margin-top: 40px;
+        }
+        .social-links {
+            margin-top: 20px;
+        }
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .Feature_List {
+            list-style-type: none;
+            padding: 0;
+            margin: none;
+            border:none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class = "container">
+        <header>
+            <h1>Features</h1>
+        </header>
+        <main>
+            <section id="features">
+                <ul class="Feature_List">
+                    <li>Shorten URLs quickly and easily</li>
+                    <li>Customize shortened links with your own alias</li>
+                    <li>Track the number of clicks on your shortened links</li>
+                    <li>Securely store your URLs for easy access</li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2021 URL Shortener</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com">Facebook</a>
+                <a href="https://www.twitter.com">Twitter</a>
+                <a href="https://www.instagram.com">Instagram</a>
+            </div>
+        </footer>
+</body>

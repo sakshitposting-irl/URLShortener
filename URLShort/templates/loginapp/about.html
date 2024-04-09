@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1, h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-top: 2px solid #eee;
+            margin-top: 40px;
+        }
+        .social-links {
+            margin-top: 20px;
+        }
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About URL Shortener</h1>
+        </header>
+        <main>
+            <section>
+                <h2></h2>
+                <p>
+Welcome to our URL Shortener! This tool allows you to shorten long URLs into shorter, more manageable links. It's a great way to share links on social media, in emails, or anywhere else where space is limited.
+
+Our URL Shortener is built using Django, a powerful web framework for Python. It utilizes a database to store the original URLs and their corresponding shortened links. The shortened links are generated using a unique algorithm to ensure their uniqueness and security.
+
+We hope you find our URL Shortener useful and enjoy using it. If you have any questions or feedback, please don't hesitate to contact us.
+                </p>
+            </section>
+            
+        </main>
+        <footer>
+            <p>&copy; 2023 About Me. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com"><img src="{% static 'images/facebook.png' %}" alt="Facebook"></a>
+                <a href="https://www.twitter.com"><img src="{% static 'images/twitter.png' %}" alt="Twitter"></a>
+                <a href="https://www.instagram.com"><img src="{% static 'images/instagram.png' %}" alt="Instagram"></a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
