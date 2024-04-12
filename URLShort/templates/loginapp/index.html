@@ -99,11 +99,14 @@
         </header>
         <main>
             <section id="Shorten">
-                <form action="{% url 'shorten' %}" method="POST">
+                <form method="POST" action="{% url 'shorten_url' %}">
                     {% csrf_token %}
-                    <input type="url" name="url" placeholder="Enter your URL here" required>
-                    <input type="submit" value="Shorten">
+                    <input type="url" name="original_url" required>
+                    <input type="submit" value="Shorten URL">
                 </form>
+                {% if shortened_url %}
+                <p>Your shortened URL is: {{ shortened_url }}</p>
+                {% endif %}
                 
             </section>
             <section id="get-started">

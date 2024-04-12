@@ -3,6 +3,7 @@ from . forms import CreateUserForm, LoginForm
 from django.contrib.auth.models import auth  
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import ShortenedURL
 
 # Create your views here.
 def home(request):
@@ -56,13 +57,34 @@ def contact(request):
 def features(request):
     return render(request, 'loginapp/features.html')
 
-def shorten(request):
-    return render(request, 'loginapp/shorten.html') 
-
-from .forms import URLShortenerForm
+from django.shortcuts import render
 from .models import ShortenedURL
-import random
-import string
 
-def shorten(request):
-    pass 
+
+def shorten_url(request):
+    if request.method == 'POST':
+        original_url = request.POST.get('original_url')
+        print("Received original URL:", original_url)  # Debugging: print the received original URL
+        if original_url:  # Check if original_url is not None or empty
+            # Generate a unique short URL
+            while True:
+                short_url = ShortenedURL.generate_short_url()
+                if not ShortenedURL.objects.filter(short_url=short_url).exists():
+                    break
+            # Create ShortenedURL object with original and short URLs
+            shortened_url_obj = ShortenedURL(original_url=original_url, short_url=short_url)
+            shortened_url_obj.save()
+            # Pass the shortened URL to the template for display
+            # Dynamically generate the complete URL based on your domain
+            return render(request, 'loginapp/index.html', {'shortened_url': request.build_absolute_uri('/') + short_url})
+    # If it's not a POST request or original_url is empty, redirect back to the homepage
+    return redirect('home')
+
+def redirect_original(request, short_url):
+    try:
+        shortened_url_obj = ShortenedURL.objects.get(short_url=short_url)
+        # Redirect to the original URL
+        return redirect(shortened_url_obj.original_url)
+    except ShortenedURL.DoesNotExist:
+        # Handle case where the shortened URL is not found
+        return redirect('home')  # Or any other appropriate redirect

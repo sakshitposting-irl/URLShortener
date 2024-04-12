@@ -18,5 +18,7 @@ urlpatterns = [
 
     path('features/', views.features, name='features'),
 
-    path('shorten/', views.shorten, name='shorten'),
+    path('shorten_url/', views.shorten_url, name='shorten_url'),
+  
+    path('<str:short_url>/', views.redirect_original, name='redirect_original'),
 ]
