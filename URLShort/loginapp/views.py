@@ -57,6 +57,7 @@ def contact(request):
 def features(request):
     return render(request, 'loginapp/features.html')
 
+
 from django.shortcuts import render
 from .models import ShortenedURL
 
@@ -88,3 +89,21 @@ def redirect_original(request, short_url):
     except ShortenedURL.DoesNotExist:
         # Handle case where the shortened URL is not found
         return redirect('home')  # Or any other appropriate redirect
+    
+def register_login(request):
+    return redirect('login')  # Redirect to the login page
+
+def login_register(request):
+    return redirect('register')  # Redirect to the register page
+
+@login_required(login_url='login')
+def dashboard_home(request):
+    return redirect('home')  # Redirect to the dashboard page
+
+@login_required(login_url='login')
+def dashboard_about(request):
+    return redirect('about')  # Redirect to the about page
+
+@login_required(login_url='login')
+def dashboard_contact(request):
+    return redirect('contact')  # Redirect to the contact page
