@@ -4,6 +4,7 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import ShortenedURL
+from django.http import JsonResponse
 
 # Create your views here.
 def home(request):
@@ -107,3 +108,30 @@ def dashboard_about(request):
 @login_required(login_url='login')
 def dashboard_contact(request):
     return redirect('contact')  # Redirect to the contact page
+
+def clear_urls(request):
+    if request.method == 'POST':
+        ShortenedURL.objects.all().delete()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+def dashboard(request):
+    shortened_urls = ShortenedURL.objects.all()
+    error = None  # Initialize error variable
+    if request.method == 'POST':
+        original_url = request.POST.get('long_url')
+        custom_short_url = request.POST.get('custom_url')
+        if original_url:
+            # Check if custom URL already exists
+            if custom_short_url and ShortenedURL.objects.filter(short_url=custom_short_url).exists():
+                error = 'Custom short URL already exists'
+            else:
+                # Save the URL if it's not empty
+                if original_url:
+                    shortened_url_obj = ShortenedURL(original_url=original_url, short_url=custom_short_url)
+                    shortened_url_obj.save()
+        else:
+            error = 'Please provide a valid long URL'
+
+    return render(request, 'loginapp/dashboard.html', {'shortened_urls': shortened_urls, 'error': error})

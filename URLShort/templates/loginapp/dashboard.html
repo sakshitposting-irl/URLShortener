@@ -168,64 +168,53 @@
 
   <main>
     <div class="container">
-      <section>
+
+      <!-- URL Shortener Dashboard -->
+      <section id="shorten_custom">
         <h1>URL Shortener Dashboard</h1>
-        <form method="post" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-              <div style="flex: 1; margin-right: 10px;">
-                <label for="long_url">Long URL:</label>
-                <input type="text" id="long_url" name="long_url" required style="width: 100%;">
-              </div>
-              <div style="flex: 1; margin-left: 10px;">
-                <label for="custom_url">Custom URL (optional):</label>
-                <input type="text" id="custom_url" name="custom_url" style="width: 100%;">
-              </div>
-              <button type="submit" class="btn" style="flex-basis: 100%; margin-top: 10px;">Shorten URL</button>
+        <form id="shorten_form" method="post" action="{% url 'dashboard' %}">
+          {% csrf_token %}
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; margin-right: 10px;">
+              <label for="long_url">Long URL:</label>
+              <input type="text" id="long_url" name="long_url" required style="width: 100%;">
             </div>
-          </form>
-          
+            <div style="flex: 1; margin-left: 10px;">
+              <label for="custom_url">Custom URL (optional):</label>
+              <input type="text" id="custom_url" name="custom_url" style="width: 100%;">
+            </div>
+            <button type="submit" class="btn" style="flex-basis: 100%; margin-top: 10px;">Shorten URL</button>
+          </div>
+        </form>
       </section>
 
-      <!--Add a work in progress section here-->
-      <section>
-        <h2>Work in Progress</h2>
-        <p>Here are some features we are currently working on:</p>
-        <ul>
-          <li>URL analytics</li>
-          <li>Custom URL management</li>
-          <li>URL expiration</li>
-        </ul>
-      </section>
+      <!-- dashboard.html -->
 
-      <section>
-        <h2>Your URLs</h2>
+  <form id="clear-url-form" method="post" action="{% url 'clear_urls' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Clear All URLs</button>
+  </form>
+
+      <!-- Shortened URLs -->
+      <section id="shortened_urls">
+        <h2>Shortened URLs</h2>
         <table>
           <thead>
             <tr>
-              <th>Long URL</th>
-              <th>Short URL</th>
-              <th>Custom URL</th>
+              <th>Original URL</th>
+              <th>Shortened URL</th>
             </tr>
           </thead>
           <tbody>
             {% for url in shortened_urls %}
             <tr>
-              <td>{{ url.long_url }}</td>
-              <td>{{ request.build_absolute_uri }}/{{ url.short_url }}</td>
-              <td>{{ url.custom_url|default:"N/A" }}</td>
+              <td>{{ url.original_url }}</td>
+              <td>{{ request.build_absolute_uri }}{{ url.short_url }}</td>
             </tr>
             {% endfor %}
-            <!-- Example values -->
-            <tr>
-              <td>https://example.com/very/long/url/that/we/use/as/an/example</td>
-              <td>http://localhost:8000/abc123</td>
-              <td>custom-example</td>
-            </tr>
           </tbody>
         </table>
       </section>
-      
     </div>
   </main>
 
