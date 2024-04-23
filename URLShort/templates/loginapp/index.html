@@ -83,6 +83,17 @@
             display: inline-block;
             margin-right: 10px;
         }
+        .url-box {
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .url-box a {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -105,9 +116,10 @@
                     <input type="submit" value="Shorten URL">
                 </form>
                 {% if shortened_url %}
-                <p>Your shortened URL is: {{ shortened_url }}</p>
+                <div class="url-box">
+                    <p>Your shortened URL is: <a href="{{ shortened_url }}" target="_blank">{{ original_url }}</a></p>
+                </div>
                 {% endif %}
-                
             </section>
             <section id="get-started">
                 <h2>Get Started</h2>

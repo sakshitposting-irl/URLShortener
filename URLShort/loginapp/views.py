@@ -114,7 +114,6 @@ def shorten_url(request):
         return JsonResponse({'error': 'Invalid request method'})
 
 
-
 def redirect_original(request, short_url):
     try:
         shortened_url_obj = ShortenedURL.objects.get(short_url=short_url)
