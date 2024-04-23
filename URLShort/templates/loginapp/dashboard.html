@@ -102,6 +102,14 @@
       background-color: #0056b3;
     }
 
+    .btn-danger {
+      background-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -153,9 +161,9 @@
   <header>
     <nav>
       <ul>
-        <li><a href="home">Home</a></li>
-        <li><a href="about">About</a></li>
-        <li><a href="contact">Contact</a></li>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
         <li>
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
@@ -168,7 +176,6 @@
 
   <main>
     <div class="container">
-
       <!-- URL Shortener Dashboard -->
       <section id="shorten_custom">
         <h1>URL Shortener Dashboard</h1>
@@ -188,14 +195,16 @@
         </form>
       </section>
 
-      <!-- dashboard.html -->
+      <!-- Error messages -->
+      {% if error %}
+      <div class="messages">
+        <ul>
+          <li>{{ error }}</li>
+        </ul>
+      </div>
+      {% endif %}
 
-  <form id="clear-url-form" method="post" action="{% url 'clear_urls' %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Clear All URLs</button>
-  </form>
-
-      <!-- Shortened URLs -->
+      <!-- Shortened URLs section -->
       <section id="shortened_urls">
         <h2>Shortened URLs</h2>
         <table>
@@ -203,13 +212,20 @@
             <tr>
               <th>Original URL</th>
               <th>Shortened URL</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {% for url in shortened_urls %}
+            {% for shortened_url in shortened_urls %}
             <tr>
-              <td>{{ url.original_url }}</td>
-              <td>{{ request.build_absolute_uri }}{{ url.short_url }}</td>
+              <td><a href="{{ shortened_url.original_url }}">{{ shortened_url.original_url }}</a></td>
+              <td><a href="/{{ shortened_url.short_url }}">{{ request.scheme }}://{{ request.get_host }}/{{ shortened_url.short_url }}</a></td>
+              <td>
+                <form method="post" action="{% url 'delete_url' shortened_url.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -217,8 +233,10 @@
       </section>
     </div>
   </main>
+      
 
-  <footer>
+
+      <footer>
     <!-- Footer content -->
     <div class="social-links">
       <a href="https://facebook.com">Facebook</a>

@@ -39,6 +39,10 @@ urlpatterns = [
     path('shorten_url/register/login/', views.register_login, name='register_login'),
 
     path('custom_short/', views.dashboard, name='custom_short'),
+    
+    path('clear/', views.clear_urls, name='clear_urls'),
 
-    path('clear/', views.clear_urls, name='clear_urls'),  # New URL pattern for clearing URLs
+    path('delete_url/<int:url_id>/', views.delete_url, name='delete_url'),
+
+    path('redirect/<str:short_url>/', views.redirect_custom, name='redirect_custom'),
 ]
