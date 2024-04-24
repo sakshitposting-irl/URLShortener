@@ -1,7 +1,248 @@
-<html>
-    <h1>
-        This is the dashboard page!
-    </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener Dashboard</title>
+  <style>
+    /* Additional styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
 
-    <a href="{% url 'logout' %}">Logout</a>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header img {
+      width: 100px; /* Adjust as needed */
+      height: auto;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #007bff;
+    }
+
+    main {
+      text-align: center;
+      padding: 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h1,
+    h2 {
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      border-top: 2px solid #eee;
+    }
+
+    .social-links {
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    li {
+      margin-bottom: 10px;
+      align-items: center;
+      list-style-type: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Responsive adjustments */
+    @media only screen and (max-width: 768px) {
+      nav ul li {
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Logout</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- URL Shortener Dashboard -->
+      <section id="shorten_custom">
+        <h1>URL Shortener Dashboard</h1>
+        <form id="shorten_form" method="post" action="{% url 'dashboard' %}">
+          {% csrf_token %}
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; margin-right: 10px;">
+              <label for="long_url">Long URL:</label>
+              <input type="text" id="long_url" name="long_url" required style="width: 100%;">
+            </div>
+            <div style="flex: 1; margin-left: 10px;">
+              <label for="custom_url">Custom URL (optional):</label>
+              <input type="text" id="custom_url" name="custom_url" style="width: 100%;">
+            </div>
+            <button type="submit" class="btn" style="flex-basis: 100%; margin-top: 10px;">Shorten URL</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Error messages -->
+      {% if error %}
+      <div class="messages">
+        <ul>
+          <li>{{ error }}</li>
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Shortened URLs section -->
+      <section id="shortened_urls">
+        <h2>Shortened URLs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Original URL</th>
+              <th>Shortened URL</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for shortened_url in shortened_urls %}
+            <tr>
+              <td><a href="{{ shortened_url.original_url }}">{{ shortened_url.original_url }}</a></td>
+              <td><a href="/{{ shortened_url.short_url }}">{{ request.scheme }}://{{ request.get_host }}/{{ shortened_url.short_url }}</a></td>
+              <td>
+                <form method="post" action="{% url 'delete_url' shortened_url.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+      
+
+
+      <footer>
+    <!-- Footer content -->
+    <div class="social-links">
+      <a href="https://facebook.com">Facebook</a>
+      <a href="https://twitter.com/">Twitter</a>
+      <a href="https://instagram.com">Instagram</a>
+    </div>
+  </footer>
+</body>
 </html>

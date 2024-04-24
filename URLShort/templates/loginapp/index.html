@@ -1,63 +1,101 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to URL Shortener</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form#shorten-url-form').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'shorten_url' %}",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.error) {
+                            $('.error-message').text(response.error).show();
+                            $('.url-box').hide();
+                        } else {
+                            $('.error-message').hide();
+                            $('.url-box').show();
+                            $('.url-box a').attr('href', response.shortened_url).text(response.shortened_url);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
+    </script>
     <style>
-        /* Additional styles */
+        /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             box-sizing: border-box;
         }
-        header {
+
+        header,
+        main,
+        footer {
             text-align: center;
-            margin-bottom: 40px;
         }
+
+        /* Navigation */
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
+
         nav ul li {
             display: inline-block;
             margin-right: 20px;
         }
+
         nav ul li a {
             text-decoration: none;
             color: #333;
             font-weight: bold;
             transition: color 0.3s ease;
         }
+
         nav ul li a:hover {
             color: #007bff;
         }
-        main {
-            text-align: center;
-            padding: 20px;
-        }
+
+        /* Main Content Sections */
         section {
             margin-bottom: 40px;
         }
-        h1, h2 {
+
+        h1,
+        h2 {
             color: #007bff;
             margin-bottom: 10px;
         }
+
         p {
             color: #666;
             margin-bottom: 20px;
         }
+
+        /* Buttons */
         .btn {
             display: inline-block;
             background-color: #007bff;
@@ -65,26 +103,67 @@
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
+
         .btn:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
         }
-        footer {
-            text-align: center;
-            padding: 20px;
+
+        .btn-container {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        /* URL Box */
+        .url-box {
             background-color: #fff;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .url-box a {
+            color: #007bff;
+        }
+
+        /* Error Message */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 20px;
+            background-color: #f8f9fa;
             border-top: 2px solid #eee;
         }
+
         .social-links {
             margin-top: 20px;
         }
+
         .social-links a {
             display: inline-block;
             margin-right: 10px;
         }
+        .shorten-url-form {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -99,21 +178,30 @@
         </header>
         <main>
             <section id="Shorten">
-                <form action="{% url 'shorten' %}" method="POST">
+                <h2>Shorten URL</h2>
+                <form id="shorten-url-form" method="POST" action="{% url 'shorten_url' %}">
                     {% csrf_token %}
-                    <input type="url" name="url" placeholder="Enter your URL here" required>
-                    <input type="submit" value="Shorten">
+                    <input type="url" name="original_url" required>
+                    <input type="submit" value="Shorten URL" class="btn">
                 </form>
-                
+                <div class="url-box" style="display: none;">
+                    <p>Your shortened URL is: <a href="#" target="_blank"></a></p>
+                </div>
+                <div class="error-message" style="display: none;"></div>
             </section>
             <section id="get-started">
                 <h2>Get Started</h2>
-                <p>Ready to start shortening URLs? Sign up for an account today and get access to all our features!</p>
-                <a href="register" class="btn">Sign Up</a>
+                <p>Ready to start shortening URLs?</p>
+                <div class="btn-container">
+                    <a href="register" class="btn">Register</a>
+                </div>
+                <div class="btn-container">
+                    <a href="login" class="btn">Log In</a>
+                </div>
             </section>
         </main>
         <footer id="contact">
-            <p>&copy; 2023 URL Shortener. All rights reserved.</p>
+            <p>&copy; 2024 URL Shortener. All rights reserved.</p>
             <div class="social-links">
                 <a href="#"><img src="{% static 'images/facebook.png' %}" alt="Facebook"></a>
                 <a href="#"><img src="{% static 'images/twitter.png' %}" alt="Twitter"></a>
@@ -122,4 +210,5 @@
         </footer>
     </div>
 </body>
+
 </html>
