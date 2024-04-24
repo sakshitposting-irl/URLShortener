@@ -152,3 +152,4 @@ def redirect_custom(request, short_url):
     shortened_url_obj = get_object_or_404(ShortenedURL, short_url=short_url)
     # Redirect to the original URL
     return redirect(shortened_url_obj.original_url)
+

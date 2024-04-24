@@ -8,6 +8,32 @@
     <title>Welcome to URL Shortener</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form#shorten-url-form').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'shorten_url' %}",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.error) {
+                            $('.error-message').text(response.error).show();
+                            $('.url-box').hide();
+                        } else {
+                            $('.error-message').hide();
+                            $('.url-box').show();
+                            $('.url-box a').attr('href', response.shortened_url).text(response.shortened_url);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
+    </script>
     <style>
         /* General Styles */
         body {
@@ -104,6 +130,15 @@
             color: #007bff;
         }
 
+        /* Error Message */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
         /* Footer */
         footer {
             padding: 20px;
@@ -118,6 +153,13 @@
         .social-links a {
             display: inline-block;
             margin-right: 10px;
+        }
+        .shorten-url-form {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -136,16 +178,16 @@
         </header>
         <main>
             <section id="Shorten">
-                <form method="POST" action="{% url 'shorten_url' %}">
+                <h2>Shorten URL</h2>
+                <form id="shorten-url-form" method="POST" action="{% url 'shorten_url' %}">
                     {% csrf_token %}
                     <input type="url" name="original_url" required>
                     <input type="submit" value="Shorten URL" class="btn">
                 </form>
-                {% if shortened_url %}
-                <div class="url-box">
-                    <p>Your shortened URL is: <a href="{{ shortened_url }}" target="_blank">{{ original_url }}</a></p>
+                <div class="url-box" style="display: none;">
+                    <p>Your shortened URL is: <a href="#" target="_blank"></a></p>
                 </div>
-                {% endif %}
+                <div class="error-message" style="display: none;"></div>
             </section>
             <section id="get-started">
                 <h2>Get Started</h2>
